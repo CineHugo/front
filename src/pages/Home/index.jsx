@@ -1,4 +1,3 @@
-import "./style.css";
 import Trash from "../../assets/trash.svg";
 import api from "../../services/api";
 import { useEffect, useState, useRef } from "react";
@@ -40,7 +39,7 @@ function Home() {
 
   return (
     <>
-      <section class="bg-gray-50 dark:bg-gray-900">
+      <section>
         <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-16">
           <p class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
             <img
@@ -55,7 +54,7 @@ function Home() {
               <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Create an account
               </h1>
-              <form class="space-y-4 md:space-y-6" action="#">
+              <form class="space-y-4 md:space-y-6" action={createUsers} method="POST">
                 <div>
                   <label
                     for="firstName"
@@ -126,7 +125,6 @@ function Home() {
                 </div>
                 <div className="text-right">
                   <button
-                    onClick={createUsers}
                     type="submit"
                     class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
