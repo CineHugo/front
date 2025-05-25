@@ -2,11 +2,27 @@ import api from "../../services/api";
 import { useRef } from "react";
 import { useNavigate, Link } from "react-router";
 import toast, { Toaster } from "react-hot-toast";
+import Cookies from "js-cookie";
 
 function Login() {
   const inputEmail = useRef();
   const inputPassword = useRef();
   const navigate = useNavigate();
+
+  // Função para decodificar JWT e extrair o ID
+  function decodeToken(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Erro ao decodificar token:', error);
+      return null;
+    }
+  }
 
   async function loginUser(e) {
     e.preventDefault();
@@ -15,10 +31,50 @@ function Login() {
         email: inputEmail.current.value,
         password: inputPassword.current.value,
       });
-      localStorage.setItem("token", data.token);
+      
+      // Armazenar token como cookie com configurações de segurança
+      Cookies.set('token', data.token, {
+        sameSite: 'Strict',
+        secure: location.protocol === 'https:',
+        expires: 7
+      });
+
+      // Decodificar o token para extrair o ID do usuário
+      const decodedToken = decodeToken(data.token);
+      let userData = null;
+      
+      if (decodedToken && decodedToken.id) {
+        try {
+          const userResponse = await api.get(`/users/${decodedToken.id}`);
+          userData = userResponse.data;
+        } catch (userError) {
+          console.error('Erro ao buscar dados do usuário:', userError);
+          // Criar dados básicos se não conseguir buscar
+          userData = {
+            id: decodedToken.id,
+            email: decodedToken.email || inputEmail.current.value,
+            role: 'user' // padrão
+          };
+        }
+      }
+
+      // Só armazenar se userData não for null/undefined
+      if (userData) {
+        Cookies.set('user', JSON.stringify(userData), {
+          sameSite: 'Strict',
+          secure: location.protocol === 'https:',
+          expires: 7
+        });
+      }
 
       toast.success("Login realizado com sucesso!");
-      navigate("/");
+      
+      // Redirecionar baseado na role
+      if (userData && userData.role === 'admin') {
+        navigate("/admin");
+      } else {
+        navigate("/profile");
+      }
     } catch (error) {
       const errorMessage = error.response?.data || "Erro ao fazer login";
       toast.error(errorMessage);
@@ -55,8 +111,8 @@ function Login() {
                   type="email"
                   name="email"
                   id="email"
+                  placeholder="you@example.com"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
                   required=""
                   ref={inputEmail}
                 />
@@ -66,7 +122,7 @@ function Login() {
                   for="password"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Password
+                  Your password
                 </label>
                 <input
                   type="password"
