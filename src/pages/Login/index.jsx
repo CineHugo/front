@@ -2,6 +2,7 @@ import api from "../../services/api";
 import { useRef } from "react";
 import { useNavigate, Link } from "react-router";
 import toast, { Toaster } from "react-hot-toast";
+import Cookies from "js-cookie";
 
 function Login() {
   const inputEmail = useRef();
@@ -15,7 +16,13 @@ function Login() {
         email: inputEmail.current.value,
         password: inputPassword.current.value,
       });
-      localStorage.setItem("token", data.token);
+      
+      // Armazenar token como cookie com configurações de segurança
+      Cookies.set('token', data.token, {
+        sameSite: 'Strict',
+        secure: location.protocol === 'https:', // Secure apenas em HTTPS
+        expires: 7 // 7 dias
+      });
 
       toast.success("Login realizado com sucesso!");
       navigate("/");

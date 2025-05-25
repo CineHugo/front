@@ -2,6 +2,7 @@ import Trash from "../../assets/trash.svg";
 import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import Cookies from "js-cookie";
 
 function Home() {
   const [users, setUsers] = useState([]);
@@ -20,7 +21,7 @@ function Home() {
   }
 
   function logout() {
-    localStorage.removeItem("token");
+    Cookies.remove("token");
     navigate("/login");
   }
 
