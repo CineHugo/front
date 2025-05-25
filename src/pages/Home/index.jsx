@@ -22,6 +22,7 @@ function Home() {
 
   function logout() {
     Cookies.remove("token");
+    Cookies.remove("user");
     navigate("/login");
   }
 
