@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import api from "../../services/api";
@@ -15,6 +15,8 @@ function Profile() {
     role: ''
   });
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const viewingUserId = searchParams.get('userId');
 
   function logout() {
     Cookies.remove('token');
@@ -91,25 +93,30 @@ function Profile() {
   }
 
   useEffect(() => {
-    const userData = Cookies.get('user');
-    if (userData && userData !== 'undefined') {
-      try {
-        const parsedUser = JSON.parse(userData);
-        setCurrentUser(parsedUser);
-        setUser(parsedUser);
-        
-        // Fazer requisição para buscar dados atualizados
-        if (parsedUser.id) {
-          fetchUserData(parsedUser.id);
+    if (viewingUserId) {
+      // Visualizando perfil de outro usuário
+      fetchUserData(viewingUserId);
+    } else {
+      // Visualizando próprio perfil
+      const userData = Cookies.get('user');
+      if (userData && userData !== 'undefined') {
+        try {
+          const parsedUser = JSON.parse(userData);
+          setCurrentUser(parsedUser);
+          setUser(parsedUser);
+          
+          if (parsedUser.id) {
+            fetchUserData(parsedUser.id);
+          }
+        } catch (error) {
+          console.error('Erro ao fazer parse dos dados do usuário:', error);
+          navigate('/login');
         }
-      } catch (error) {
-        console.error('Erro ao fazer parse dos dados do usuário:', error);
+      } else {
         navigate('/login');
       }
-    } else {
-      navigate('/login');
     }
-  }, [navigate]);
+  }, [navigate, viewingUserId]);
 
   async function fetchUserData(userId) {
     try {
@@ -160,14 +167,26 @@ function Profile() {
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                Meu Perfil
+                {viewingUserId ? 'Perfil do Usuário' : 'Meu Perfil'}
               </h2>
-              <button
-                onClick={openEditModal}
-                className="px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Editar
-              </button>
+              <div className="flex gap-2">
+                {viewingUserId && (
+                  <button
+                    onClick={() => navigate('/admin')}
+                    className="px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300"
+                  >
+                    Voltar
+                  </button>
+                )}
+                {!viewingUserId && (
+                  <button
+                    onClick={openEditModal}
+                    className="px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Editar
+                  </button>
+                )}
+              </div>
             </div>
             
             <div className="space-y-4">
