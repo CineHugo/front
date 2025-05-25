@@ -1,6 +1,7 @@
 import api from "../../services/api";
 import { useRef } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
+import toast, { Toaster } from "react-hot-toast";
 
 function Login() {
   const inputEmail = useRef();
@@ -16,16 +17,18 @@ function Login() {
       });
       localStorage.setItem("token", data.token);
 
-      alert("Login realizado com sucesso!");
+      toast.success("Login realizado com sucesso!");
       navigate("/");
     } catch (error) {
-      alert("Erro ao fazer login");
+      const errorMessage = error.response?.data || "Erro ao fazer login";
+      toast.error(errorMessage);
       console.error(error);
     }
   }
 
   return (
     <section>
+      <Toaster position="top-right" />
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-16">
         <p class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
           <img class="w-8 h-8 mr-2" src="/src/assets/meeting.png" alt="logo" />
@@ -84,6 +87,15 @@ function Login() {
                 </button>
               </div>
             </form>
+            <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+              Don't have an account yet?{" "}
+              <Link
+                to="/register"
+                class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+              >
+                Sign up
+              </Link>
+            </p>
           </div>
         </div>
       </div>
