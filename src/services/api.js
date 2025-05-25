@@ -2,7 +2,8 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const api = axios.create({
-    baseURL: 'https://back-production-352b.up.railway.app/'
+    // baseURL: 'https://back-production-352b.up.railway.app/'
+    baseURL: 'http://localhost:8000',
     // Removido withCredentials para evitar erro de CORS
 })
 
