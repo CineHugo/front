@@ -3,6 +3,7 @@ import { useProfile } from "../../hooks/useProfile";
 import ProfileInfo from "../../components/ProfileInfo";
 import ProfileModal from "../../components/ProfileModal";
 import { Toaster } from "react-hot-toast";
+import CineHugoLogo from "../../assets/cinehugo.svg";
 
 
 function Profile() {
@@ -50,7 +51,7 @@ function Profile() {
           <div className="flex items-center gap-4">
             <img
               className="w-8 h-8 mr-2"
-              src="/src/assets/cinehugo.svg"
+              src={CineHugoLogo}
               alt="logo"
             />
             <span className="text-2xl font-semibold text-gray-900 dark:text-white">

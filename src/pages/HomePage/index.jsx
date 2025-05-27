@@ -1,4 +1,5 @@
-import { Link } from 'react-router'; //
+import { Link } from 'react-router';
+import CineHugoLogo from "../../assets/cinehugo.svg";
 
 const moviesInTheaters = [
   {
@@ -40,7 +41,7 @@ function HomePage() {
             <Link to="/" className="flex items-center space-x-2">
               <img
                 class="w-8 h-8 mr-2"
-                src="/src/assets/cinehugo.svg"
+                src={CineHugoLogo}
                 alt="logo"
               />
               <span className="text-3xl font-bold tracking-tight">CineHugo</span>

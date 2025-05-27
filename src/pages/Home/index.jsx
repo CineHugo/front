@@ -1,4 +1,5 @@
 import Trash from "../../assets/trash.svg";
+import CineHugoLogo from "../../assets/cinehugo.svg";
 import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -60,7 +61,7 @@ function Home() {
             <div class="flex items-center gap-4">
               <img
                 class="w-8 h-8 mr-2"
-                src="/src/assets/cinehugo.svg"
+                src={CineHugoLogo}
                 alt="logo"
               />
               <span class="text-2xl font-semibold text-gray-900 dark:text-white">
