@@ -26,6 +26,10 @@ export function useProfile() {
     navigate('/login');
   }
 
+  async function deleteUser(id) {
+    await api.delete(`/users/delete/${id}`);
+  }
+
   useEffect(() => {
     const userData = Cookies.get('user');
     let currentUserData = null;
@@ -63,6 +67,7 @@ export function useProfile() {
     isViewingOtherUser,
     setUser,
     logout,
-    navigate
+    navigate,
+    deleteUser
   };
 }

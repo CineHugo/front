@@ -7,7 +7,7 @@ import { Toaster } from "react-hot-toast";
 
 function Profile() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { user, currentUser, isViewingOtherUser, setUser, logout, navigate } = useProfile();
+  const { user, currentUser, isViewingOtherUser, setUser, logout, navigate, deleteUser } = useProfile();
 
   function openEditModal() {
     setIsModalOpen(true);
@@ -19,6 +19,23 @@ function Profile() {
 
   function handleUpdate(updatedUser) {
     setUser(updatedUser);
+  }
+
+  async function handleDelete() {
+    if (window.confirm("Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.")) {
+      try {
+        await deleteUser(user.id);
+        // Se o usuário deletou o próprio perfil, faça logout
+        if (!isViewingOtherUser) {
+          logout();
+        } else {
+          // Se admin deletou outro usuário, volte para a tela de admin
+          navigate('/admin');
+        }
+      } catch (error) {
+        alert("Erro ao excluir usuário.");
+      }
+    }
   }
 
   if (!user) {
@@ -66,12 +83,20 @@ function Profile() {
                 )}
                 {/* Mostrar botão editar se: está no próprio perfil OU se é admin */}
                 {!isViewingOtherUser || (currentUser && currentUser.role === 'admin') ? (
-                  <button
-                    onClick={openEditModal}
-                    className="px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  >
-                    Editar
-                  </button>
+                  <>
+                    <button
+                      onClick={openEditModal}
+                      className="px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      className="px-3 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-700 dark:hover:bg-red-800 dark:focus:ring-red-900"
+                    >
+                      Excluir
+                    </button>
+                  </>
                 ) : null}
               </div>
             </div>
