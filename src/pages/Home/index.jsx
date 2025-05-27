@@ -60,11 +60,11 @@ function Home() {
             <div class="flex items-center gap-4">
               <img
                 class="w-8 h-8 mr-2"
-                src="/src/assets/meeting.png"
+                src="/src/assets/cinehugo.svg"
                 alt="logo"
               />
               <span class="text-2xl font-semibold text-gray-900 dark:text-white">
-                MeetUnimontes
+                CineHugo
               </span>
             </div>
 

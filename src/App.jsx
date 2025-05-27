@@ -5,11 +5,13 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import PrivateRoute from "./components/PrivateRoutes";
 import AdminRoute from "./components/AdminRoute";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route 
