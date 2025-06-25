@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const api = axios.create({
-    baseURL: 'https://back-production-352b.up.railway.app/'
+    baseURL: 'https://absolute-cinema-back.q7hbhh.easypanel.host/'
     // Removido withCredentials para evitar erro de CORS
 })
 
