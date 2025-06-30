@@ -10,8 +10,8 @@ function AdminSessionNew() {
     
     const preselectedMovieId = location.state?.movieId;
 
-    const [movies, setMovies] = useState([]);
-    const [rooms, setRooms] = useState([]); // Estado para as salas
+    const [movie, setMovie] = useState([]);
+    const [rooms, setRooms] = useState([]);
     const [formData, setFormData] = useState({
         movieId: preselectedMovieId || '',
         roomId: '', // Será populado pelo select
@@ -25,13 +25,14 @@ function AdminSessionNew() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const [moviesRes, roomsRes] = await Promise.all([
-                    api.get('/movies'),
+                const [movieRes, roomsRes] = await Promise.all([
+                    api.get(`/movies/movie/${movieId.value}`),
                     api.get('/rooms')
                 ]);
-                setMovies(moviesRes.data);
+                setMovie(movieRes.data);
                 setRooms(roomsRes.data);
             } catch (error) {
+                console.log(error);
                 toast.error("Falha ao carregar dados de filmes ou salas.");
             }
         }
@@ -59,7 +60,6 @@ function AdminSessionNew() {
             basePrice: Number(formData.basePrice),
             startsAt: new Date(formData.startsAt).toISOString(),
         };
-        console.log(payload);
 
         try {
             await api.post('/sessions/create', payload);
@@ -95,22 +95,22 @@ function AdminSessionNew() {
 
                 <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl space-y-6">
                     <div>
-                        <label htmlFor="movieId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Filme</label>
-                        <select
-                            id="movieId"
+                        <label htmlFor="movieTitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Filme</label>
+                        <input
+                            type="hidden"
                             name="movieId"
+                            id="movieId"
                             value={formData.movieId}
-                            onChange={handleInputChange}
-                            required
+                            readOnly
                             className="mt-1 block w-full bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-gray-900 dark:text-white"
-                        >
-                            <option value="" disabled>Selecione um filme</option>
-                            {movies.map(movie => (
-                                <option key={movie.id} value={movie.id}>
-                                    {movie.title}
-                                </option>
-                            ))}
-                        </select>
+                        />
+                        <input
+                            type="text"
+                            id="movieTitle"
+                            value={movie.title}
+                            readOnly
+                            className="mt-1 block w-full bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-gray-900 dark:text-white"
+                        />
                     </div>
 
                     {/* CAMPO DE SALA ATUALIZADO */}
@@ -126,7 +126,7 @@ function AdminSessionNew() {
                         >
                             <option value="" disabled>Selecione uma sala</option>
                             {rooms.map(room => (
-                                <option key={room.id} value={room.id}>
+                                <option key={room._id} value={room._id}>
                                     {room.name} (Capacidade: {room.capacity})
                                 </option>
                             ))}
