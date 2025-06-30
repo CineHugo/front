@@ -12,7 +12,7 @@ function AdminRoute({ children }) {
   try {
     const user = JSON.parse(userData);
     if (user.role !== 'admin') {
-      return <Navigate to="/profile" />;
+      return <Navigate to="/" />;
     }
     return children;
   } catch (error) {
