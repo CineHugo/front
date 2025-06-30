@@ -15,7 +15,8 @@ import AdminMovieEdit from "./pages/Admin/Movies/Edit";
 import PublicMovieView from "./pages/Public/MovieView";
 import AdminSessionNew from "./pages/Admin/Sessions/New";
 import AdminRoomList from './pages/Admin/Rooms';
-import AdminRoomNew from './pages/Admin/Rooms/New'; 
+import AdminRoomNew from './pages/Admin/Rooms/New';
+import AdminSessionEdit from './pages/Admin/Sessions/Edit';
 
 function App() {
   return (
@@ -81,6 +82,7 @@ function App() {
             </AdminRoute>
           }
         />
+        <Route path="/admin/sessions/edit/:sessionId" element={<AdminRoute><AdminSessionEdit /></AdminRoute>} />
         <Route path="/admin/rooms" element={<AdminRoute><AdminRoomList /></AdminRoute>} />
         <Route path="/admin/rooms/new" element={<AdminRoute><AdminRoomNew /></AdminRoute>} />
       </Routes>
