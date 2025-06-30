@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router";
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -10,6 +12,7 @@ import AdminMovies from "./pages/Movies";
 import AdminMovieNew from "./pages/Movies/New";
 import AdminMovieView from "./pages/Movies/View";
 import AdminMovieEdit from "./pages/Movies/Edit";
+import PublicMovieView from "./pages/Public/MovieView";
 
 function App() {
   return (
@@ -18,6 +21,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/movie/:movieId" element={<PublicMovieView />} />
         <Route 
           path="/profile" 
           element={
