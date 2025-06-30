@@ -13,7 +13,7 @@ export function useProfile() {
 
   async function fetchUserData(userId) {
     try {
-      const response = await api.get(`/users/${userId}`);
+      const response = await api.get(`/users/user/${userId}`);
       setUser(response.data);
     } catch (error) {
       console.error('Erro ao buscar dados do usuário:', error);
