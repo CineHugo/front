@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
-import { FilmIcon, PencilSquareIcon, EyeIcon, PlusCircleIcon, CalendarIcon, ViewfinderCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { useNavigate, Link } from 'react-router';
+import { FilmIcon, PencilSquareIcon, EyeIcon, PlusCircleIcon, CalendarIcon, ViewfinderCircleIcon, TrashIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import api from '../../../services/api';
 
@@ -83,6 +83,13 @@ function AdminMovies() {
             <PlusCircleIcon className="h-6 w-6" />
             Cadastrar Filme
           </button>
+          <Link
+            to="/admin"
+            className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+          >
+            <ArrowLeftIcon className="h-5 w-5" />
+            Voltar ao Painel
+          </Link>
         </div>
 
         <div className="bg-white dark:bg-gray-800 shadow-xl rounded-lg overflow-hidden">
