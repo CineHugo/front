@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { FilmIcon, PencilSquareIcon, EyeIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
+import { FilmIcon, PencilSquareIcon, EyeIcon, PlusCircleIcon, CalendarIcon, ViewfinderCircleIcon } from '@heroicons/react/24/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import api from '../../../services/api';
 
@@ -33,6 +33,10 @@ function AdminMovies() {
     fetchMovies();
   }, []);
 
+  const handleAddNewSession = (movieId) => {
+    navigate('/admin/sessions/new', { state: { movieId: movieId } });
+  };
+
   const handleEdit = (movieId) => {
     navigate(`/admin/movies/edit/${movieId}`);
   };
@@ -56,6 +60,9 @@ function AdminMovies() {
               Gerenciamento de Filmes
             </h1>
           </div>
+          <button onClick={() => navigate('/admin/rooms')} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+            <ViewfinderCircleIcon className="h-6 w-6" />Gerenciar Salas
+          </button>
           <button
             onClick={handleAddNewMovie}
             className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
@@ -99,6 +106,9 @@ function AdminMovies() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm">{movie.genre || 'N/A'}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                         <div className="flex items-center justify-center space-x-4">
+                          <button onClick={() => handleAddNewSession(movie.id)} className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300" title="Adicionar Sessão">
+                            <CalendarIcon className="h-5 w-5" />
+                          </button>
                           <button onClick={() => handleView(movie.id)} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300" title="Visualizar">
                             <EyeIcon className="h-5 w-5" />
                           </button>
