@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useProfile } from "../../hooks/useProfile";
-import ProfileInfo from "../../components/ProfileInfo";
-import ProfileModal from "../../components/ProfileModal";
+import { useProfile } from "../../../../hooks/useProfile";
+import ProfileInfo from "../../../../components/ProfileInfo";
+import ProfileModal from "../../../../components/ProfileModal";
 import { Toaster } from "react-hot-toast";
-import CineHugoLogo from "../../assets/cinehugo.svg";
+import CineHugoLogo from "../../../../assets/cinehugo.svg";
 
 
 function Profile() {

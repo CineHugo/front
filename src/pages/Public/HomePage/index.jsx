@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import api from '../../services/api';
+import api from '../../../services/api';
 import Slider from "react-slick";
-import CineHugoLogo from "../../assets/cinehugo.svg";
+import CineHugoLogo from "../../../assets/cinehugo.svg";
 import { TicketIcon, EyeIcon } from '@heroicons/react/24/outline';
 
 const getImageUrl = (imagePath) => {
@@ -69,7 +69,7 @@ function HomePage() {
         <h1 className="text-4xl font-extrabold text-center mb-12 text-red-700 dark:text-white">Em Cartaz</h1>
         <Slider {...settings}>
           {movies.map((movie) => (
-            <div key={movie._id} className="p-4">
+            <div key={movie.id} className="p-4">
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden group">
                 <div className="relative">
                   <img

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router';
-import api from '../../../services/api';
+import api from '../../../../services/api';
 import toast, { Toaster } from 'react-hot-toast';
 import { ArrowLeftIcon, FilmIcon, PhotoIcon } from '@heroicons/react/24/outline';
 

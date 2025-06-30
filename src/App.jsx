@@ -1,18 +1,21 @@
-import { BrowserRouter, Routes, Route } from "react-router";
-import "slick-carousel/slick/slick.css"; 
+import {BrowserRouter,Routes,Route} from "react-router";
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Profile from "./pages/Profile";
+import Home from "./pages/Admin/Home";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
+import Profile from "./pages/Admin/Users/Profile";
 import PrivateRoute from "./components/PrivateRoutes";
 import AdminRoute from "./components/AdminRoute";
-import HomePage from "./pages/HomePage";
-import AdminMovies from "./pages/Movies";
-import AdminMovieNew from "./pages/Movies/New";
-import AdminMovieView from "./pages/Movies/View";
-import AdminMovieEdit from "./pages/Movies/Edit";
+import HomePage from "./pages/Public/HomePage";
+import AdminMovies from "./pages/Admin/Movies";
+import AdminMovieNew from "./pages/Admin/Movies/New";
+import AdminMovieView from "./pages/Admin/Movies/View";
+import AdminMovieEdit from "./pages/Admin/Movies/Edit";
 import PublicMovieView from "./pages/Public/MovieView";
+import AdminSessionNew from "./pages/Admin/Sessions/New";
+import AdminRoomList from './pages/Admin/Rooms';
+import AdminRoomNew from './pages/Admin/Rooms/New'; 
 
 function App() {
   return (
@@ -22,29 +25,21 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/movie/:movieId" element={<PublicMovieView />} />
-        <Route 
-          path="/profile" 
+        <Route
+          path="/profile"
           element={
             <PrivateRoute>
               <Profile />
             </PrivateRoute>
-          } 
+          }
         />
-        <Route 
-          path="/admin" 
+        <Route
+          path="/admin"
           element={
             <AdminRoute>
               <Home />
             </AdminRoute>
-          } 
-        />
-        <Route 
-          path="/" 
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          } 
+          }
         />
         <Route
           path="/admin/movies"
@@ -78,6 +73,16 @@ function App() {
             </AdminRoute>
           }
         />
+        <Route 
+          path="/admin/sessions/new"
+          element={
+            <AdminRoute>
+              <AdminSessionNew />
+            </AdminRoute>
+          }
+        />
+        <Route path="/admin/rooms" element={<AdminRoute><AdminRoomList /></AdminRoute>} />
+        <Route path="/admin/rooms/new" element={<AdminRoute><AdminRoomNew /></AdminRoute>} />
       </Routes>
     </BrowserRouter>
   );

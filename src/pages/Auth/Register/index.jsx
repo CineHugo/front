@@ -1,8 +1,8 @@
-import api from "../../services/api";
 import { useRef } from "react";
 import { useNavigate, Link } from "react-router";
 import toast, { Toaster } from 'react-hot-toast';
-import CineHugoLogo from "../../assets/cinehugo.svg";
+import CineHugoLogo from "../../../assets/cinehugo.svg";
+import api from "../../../services/api";
 
 function Register() {
   const inputFirstName = useRef();
