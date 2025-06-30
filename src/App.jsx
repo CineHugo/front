@@ -6,6 +6,10 @@ import Profile from "./pages/Profile";
 import PrivateRoute from "./components/PrivateRoutes";
 import AdminRoute from "./components/AdminRoute";
 import HomePage from "./pages/HomePage";
+import AdminMovies from "./pages/Movies";
+import AdminMovieNew from "./pages/Movies/New";
+import AdminMovieView from "./pages/Movies/View";
+import AdminMovieEdit from "./pages/Movies/Edit";
 
 function App() {
   return (
@@ -37,6 +41,38 @@ function App() {
               <Profile />
             </PrivateRoute>
           } 
+        />
+        <Route
+          path="/admin/movies"
+          element={
+            <AdminRoute>
+              <AdminMovies />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/movies/new"
+          element={
+            <AdminRoute>
+              <AdminMovieNew />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/movies/view/:movieId"
+          element={
+            <AdminRoute>
+              <AdminMovieView />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/movies/edit/:movieId"
+          element={
+            <AdminRoute>
+              <AdminMovieEdit />
+            </AdminRoute>
+          }
         />
       </Routes>
     </BrowserRouter>
