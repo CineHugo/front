@@ -18,6 +18,7 @@ import AdminRoomList from './pages/Admin/Rooms';
 import AdminRoomNew from './pages/Admin/Rooms/New';
 import AdminSessionEdit from './pages/Admin/Sessions/Edit';
 import AdminUserList from "./pages/Admin/Users/List";
+import SeatMap from "./pages/Private/SeatMap";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/movie/:movieId" element={<PublicMovieView />} />
+        <Route path="/select-seat/:sessionId" element={<PrivateRoute><SeatMap /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
         <Route path="/admin" element={<AdminRoute><Home /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminUserList /></AdminRoute>} />

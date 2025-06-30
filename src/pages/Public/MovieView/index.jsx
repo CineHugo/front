@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router';
+import { useParams, Link, useNavigate } from 'react-router';
 import api from '../../../services/api';
 import toast, { Toaster } from 'react-hot-toast';
 import { ArrowLeftIcon, CalendarDaysIcon, TagIcon, TicketIcon, UsersIcon } from '@heroicons/react/24/outline';
@@ -16,6 +16,7 @@ function PublicMovieView() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const { movieId } = useParams();
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     if (!movieId) return;
@@ -59,8 +60,8 @@ function PublicMovieView() {
     fetchData();
   }, [movieId]);
 
-  const handleBuyTicket = () => {
-    toast.success('Funcionalidade de compra a ser implementada!');
+  const handleBuyTicket = (sessionId) => {
+    navigate(`/select-seat/${sessionId}`);
   };
 
   if (loading) return <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white"><p>Carregando...</p></div>;
@@ -100,7 +101,6 @@ function PublicMovieView() {
           </div>
         </div>
 
-        {/* Seção de Sessões */}
         <div className="mt-12">
             <h2 className="text-3xl font-bold mb-6">Sessões Disponíveis</h2>
             <div className="space-y-4">
@@ -119,7 +119,7 @@ function PublicMovieView() {
                             <p className="font-bold text-lg">R$ {session.basePrice.toFixed(2)}</p>
                         </div>
                         <div>
-                            <button onClick={handleBuyTicket} className="w-full md:w-auto flex items-center justify-center bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                            <button  onClick={() => handleBuyTicket(session.id)} className="w-full md:w-auto flex items-center justify-center bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition">
                                 <TicketIcon className="h-5 w-5 mr-2" /> Comprar
                             </button>
                         </div>

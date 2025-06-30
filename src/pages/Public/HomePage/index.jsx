@@ -4,7 +4,7 @@ import Slider from "react-slick";
 import Cookies from 'js-cookie';
 import CineHugoLogo from "../../../assets/cinehugo.svg";
 import { TicketIcon, EyeIcon, UserCircleIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import api from '../../../services/api';
 
 const getImageUrl = (imagePath) => {
@@ -16,25 +16,27 @@ const getImageUrl = (imagePath) => {
 
 function HomePage() {
   const [movies, setMovies] = useState([]);
+  const [sessions, setSessions] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   useEffect(() => {
-    // Verifica se o usuário está logado
     const token = Cookies.get('token');
-    if (token) {
-      setIsLoggedIn(true);
-    }
+    if (token) setIsLoggedIn(true);
 
-    async function fetchMovies() {
+    async function fetchData() {
       try {
-        const { data } = await api.get('/movies');
-        setMovies(data);
+        const [moviesRes, sessionsRes] = await Promise.all([
+            api.get('/movies'),
+            api.get('/sessions')
+        ]);
+        setMovies(moviesRes.data);
+        setSessions(sessionsRes.data);
       } catch (error) {
-        console.error("Falha ao buscar filmes:", error);
+        console.error("Falha ao buscar dados:", error);
       }
     }
-    fetchMovies();
+    fetchData();
   }, []);
 
   const handleLogout = () => {
@@ -42,6 +44,22 @@ function HomePage() {
     Cookies.remove('user');
     setIsLoggedIn(false);
     navigate('/');
+  };
+
+  const handleBuyTicket = (e, movieId) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const now = new Date();
+    const upcomingSessions = sessions
+        .filter(s => s.movieId === movieId && new Date(s.startsAt) > now)
+        .sort((a, b) => new Date(a.startsAt) - new Date(b.startsAt));
+    if (upcomingSessions.length > 0) {
+        const nextSessionId = upcomingSessions[0].id;
+        navigate(`/select-seat/${nextSessionId}`);
+    } else {
+      toast.error("Não há sessões futuras disponíveis para este filme.");
+    }
   };
 
   const settings = {
@@ -59,14 +77,9 @@ function HomePage() {
     ]
   };
 
-  const handleBuyTicket = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toast.success('Funcionalidade de compra a ser implementada!');
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+      <Toaster position="top-right" />
       <header className="bg-gradient-to-r from-red-600 to-red-800 dark:from-red-900 dark:to-red-950 text-white shadow-lg">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
@@ -113,7 +126,7 @@ function HomePage() {
                         <Link to={`/movie/${movie.id}`} className="flex items-center gap-2 bg-white/80 text-black font-bold py-2 px-6 rounded-lg hover:bg-white">
                             <EyeIcon className="h-5 w-5"/> Ver Detalhes
                         </Link>
-                        <button onClick={handleBuyTicket} className="flex items-center gap-2 bg-red-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-700">
+                        <button onClick={(e) => handleBuyTicket(e, movie.id)} className="flex items-center gap-2 bg-red-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-700">
                             <TicketIcon className="h-5 w-5"/> Comprar Ingresso
                         </button>
                     </div>
