@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
-import api from '../../../services/api';
 import toast, { Toaster } from 'react-hot-toast';
 import { ArrowLeftIcon, FilmIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import api from '../../../../services/api';
 
 function AdminMovieNew() {
   const [formData, setFormData] = useState({

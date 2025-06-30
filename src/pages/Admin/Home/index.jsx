@@ -1,11 +1,11 @@
-import Trash from "../../assets/trash.svg";
-import CineHugoLogo from "../../assets/cinehugo.svg";
-import api from "../../services/api";
+import Trash from "../../../assets/trash.svg";
+import CineHugoLogo from "../../../assets/cinehugo.svg";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import api from "../../../services/api";
 
 // Detecta tema escuro do Tailwind
 function useDarkMode() {

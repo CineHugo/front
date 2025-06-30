@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import api from '../../services/api';
+import api from '../../../services/api';
 import Slider from "react-slick";
-import CineHugoLogo from "../../assets/cinehugo.svg";
+import CineHugoLogo from "../../../assets/cinehugo.svg";
 import { TicketIcon, EyeIcon } from '@heroicons/react/24/outline';
 
 const getImageUrl = (imagePath) => {

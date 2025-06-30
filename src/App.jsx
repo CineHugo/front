@@ -1,17 +1,17 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Profile from "./pages/Profile";
+import Home from "./pages/Admin/Home";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
+import Profile from "./pages/Admin/Users/Profile";
 import PrivateRoute from "./components/PrivateRoutes";
 import AdminRoute from "./components/AdminRoute";
-import HomePage from "./pages/HomePage";
-import AdminMovies from "./pages/Movies";
-import AdminMovieNew from "./pages/Movies/New";
-import AdminMovieView from "./pages/Movies/View";
-import AdminMovieEdit from "./pages/Movies/Edit";
+import HomePage from "./pages/Public/HomePage";
+import AdminMovies from "./pages/Admin/Movies";
+import AdminMovieNew from "./pages/Admin/Movies/New";
+import AdminMovieView from "./pages/Admin/Movies/View";
+import AdminMovieEdit from "./pages/Admin/Movies/Edit";
 import PublicMovieView from "./pages/Public/MovieView";
 
 function App() {

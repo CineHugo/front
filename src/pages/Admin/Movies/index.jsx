@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import api from '../../services/api';
 import { FilmIcon, PencilSquareIcon, EyeIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import toast, { Toaster } from 'react-hot-toast';
+import api from '../../../services/api';
 
 const getImageUrl = (imagePath) => {
     if (!imagePath) return null;

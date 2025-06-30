@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useParams } from 'react-router';
-import api from '../../../services/api';
 import toast, { Toaster } from 'react-hot-toast';
 import { ArrowLeftIcon, CalendarDaysIcon, ClockIcon, FilmIcon, TagIcon } from '@heroicons/react/24/outline';
+import api from '../../../../services/api';
 
 const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
