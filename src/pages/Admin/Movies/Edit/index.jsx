@@ -17,7 +17,6 @@ function AdminMovieEdit() {
 
     const [formData, setFormData] = useState({
         title: '',
-        genre: '',
         synopsis: '',
         releaseDate: '',
     });
@@ -35,7 +34,6 @@ function AdminMovieEdit() {
                 
                 setFormData({
                     title: data.title,
-                    genre: data.genre,
                     synopsis: data.synopsis,
                     releaseDate: releaseDate,
                 });
@@ -83,14 +81,14 @@ function AdminMovieEdit() {
 
             if (mainImage.file) {
                 const base64 = await convertFileToBase64(mainImage.file);
-                payload.mainImage = {
+                payload.mainImageUrl = {
                     mimeType: mainImage.file.type,
                     data: base64.split(',')[1]
                 };
             }
             if (bannerImage.file) {
                 const base64 = await convertFileToBase64(bannerImage.file);
-                payload.bannerImage = {
+                payload.bannerImageUrl = {
                     mimeType: bannerImage.file.type,
                     data: base64.split(',')[1]
                 };
@@ -141,8 +139,8 @@ function AdminMovieEdit() {
                                 <input type="text" name="title" id="title" value={formData.title} onChange={handleInputChange} required className="mt-1 block w-full bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-gray-900 dark:text-white"/>
                             </div>
                             <div>
-                                <label htmlFor="genre" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Gênero</label>
-                                <input type="text" name="genre" id="genre" value={formData.genre} className="mt-1 block w-full bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-gray-900 dark:text-white"/>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Gênero</label>
+                                <input type="text" className="mt-1 block w-full bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-gray-900 dark:text-white"/>
                             </div>
                         </div>
                         <div>
