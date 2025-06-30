@@ -1,169 +1,136 @@
-import Trash from "../../../../assets/trash.svg";
-import CineHugoLogo from "../../../../assets/cinehugo.svg";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import Cookies from "js-cookie";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import toast, { Toaster } from 'react-hot-toast';
+import { UsersIcon, TrashIcon, EyeIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import UserModal from "../../../../components/Admin/UserModal";
 import api from "../../../../services/api";
 
-// Detecta tema escuro do Tailwind
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(false);
-  useEffect(() => {
-    const root = window.document.documentElement;
-    setIsDark(root.classList.contains('dark'));
-    const observer = new MutationObserver(() => {
-      setIsDark(root.classList.contains('dark'));
-    });
-    observer.observe(root, { attributes: true, attributeFilter: ['class'] });
-    return () => observer.disconnect();
-  }, []);
-  return isDark;
-}
+const TableRowSkeleton = () => (
+    <tr className="animate-pulse">
+        <td className="px-6 py-4 whitespace-nowrap"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div></td>
+        <td className="px-6 py-4 whitespace-nowrap"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div></td>
+        <td className="px-6 py-4 whitespace-nowrap"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div></td>
+        <td className="px-6 py-4 whitespace-nowrap text-center"><div className="flex justify-center items-center space-x-4"><div className="h-5 w-5 bg-gray-200 dark:bg-gray-700 rounded"></div><div className="h-5 w-5 bg-gray-200 dark:bg-gray-700 rounded"></div></div></td>
+    </tr>
+);
 
 function AdminUserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const isDark = useDarkMode();
-
-  async function getUsers() {
-    setLoading(true);
-    try {
-      const usersFromApi = await api.get("/users");
-      setUsers(usersFromApi.data);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function deleteUsers(id) {
-    await api.delete(`/users/delete/${id}`);
-    getUsers();
-  }
-
-  function logout() {
-    Cookies.remove("token");
-    Cookies.remove("user");
-    navigate("/login");
-  }
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);  
 
   useEffect(() => {
+    async function getUsers() {
+      try {
+        setLoading(true);
+        const { data } = await api.get("/users");
+        setUsers(data);
+      } catch (error) {
+        toast.error("Falha ao carregar a lista de usuários.");
+      } finally {
+        setLoading(false);
+      }
+    }
     getUsers();
   }, []);
 
+  const handleViewUser = (user) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleUserUpdate = (updatedUser) => {
+    setUsers(prevUsers => prevUsers.map(user => user.id === updatedUser.id ? updatedUser : user));
+  };
+
+  const handleDeleteUser = async (userId) => {
+    const currentUserData = Cookies.get('user');
+    if (currentUserData && JSON.parse(currentUserData).id === userId) {
+        toast.error("Você não pode excluir seu próprio usuário.");
+        return;
+    }
+    if (window.confirm("Tem certeza que deseja excluir este usuário?")) {
+      try {
+        await api.delete(`/users/delete/${userId}`);
+        toast.success("Usuário excluído com sucesso!");
+        setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+      } catch (error) {
+        toast.error("Falha ao excluir o usuário.");
+      }
+    }
+  };
+
   return (
     <>
-      <section>
-        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-16">
-          <div class="flex items-center justify-between w-full max-w-md mb-6">
-            <div class="flex items-center gap-4">
-              <img
-                class="w-8 h-8 mr-2"
-                src={CineHugoLogo}
-                alt="logo"
-              />
-              <span class="text-2xl font-semibold text-gray-900 dark:text-white">
-                CineHugo
-              </span>
-            </div>
-
-            {/* Botão de Logout */}
-            <button
-              onClick={logout}
-              className="px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-            >
-              Logout
-            </button>
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white p-4 sm:p-6 lg:p-8">
+        <Toaster position="top-right" />
+        <div className="max-w-5xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+              <div className="flex items-center space-x-3">
+                  <UsersIcon className="h-10 w-10 text-red-600 dark:text-red-500" />
+                  <h1 className="text-3xl md:text-4xl font-bold">Gerenciamento de Usuários</h1>
+              </div>
+              <Link to="/admin" className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                  <ArrowLeftIcon className="h-5 w-5" />
+                  Voltar ao Painel
+              </Link>
           </div>
 
-          {/* Listar Usuários */}
-          <div className="w-full bg-white rounded-lg shadow dark:border md:mt-8 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h2 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                Lista de Usuários
-              </h2>
-              {loading ? (
-                Array.from({ length: 3 }).map((_, idx) => (
-                  <div
-                    key={idx}
-                    className="w-full bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700 p-6 mb-4"
-                  >
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-900 dark:text-gray-400">
-                        <b>Nome:</b> <Skeleton 
-                          width={120}
-                          baseColor={isDark ? '#18181b' : '#bdbdbd'}
-                          highlightColor={isDark ? '#6366f1' : '#ffffff'}
-                          duration={1.2}
-                        />
-                      </p>
-                      <p className="text-sm text-gray-900 dark:text-gray-400">
-                        <b>Email:</b> <Skeleton 
-                          width={180}
-                          baseColor={isDark ? '#18181b' : '#bdbdbd'}
-                          highlightColor={isDark ? '#6366f1' : '#ffffff'}
-                          duration={1.2}
-                        />
-                      </p>
-                    </div>
-                    <div className="flex justify-end gap-2 mt-4">
-                      <Skeleton 
-                        width={80} 
-                        height={32} 
-                        baseColor={isDark ? '#18181b' : '#bdbdbd'}
-                        highlightColor={isDark ? '#6366f1' : '#ffffff'}
-                        duration={1.2}
-                        style={{ borderRadius: 8 }}
-                      />
-                      <Skeleton 
-                        width={80} 
-                        height={32} 
-                        baseColor={isDark ? '#18181b' : '#bdbdbd'}
-                        highlightColor={isDark ? '#6366f1' : '#ffffff'}
-                        duration={1.2}
-                        style={{ borderRadius: 8 }}
-                      />
-                    </div>
-                  </div>
-                ))
-              ) : (
-                users.map((user) => (
-                  <div
-                    key={user.id}
-                    className="w-full bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700 p-6 mb-4"
-                  >
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-900 dark:text-gray-400">
-                        <b>Nome:</b> {user.firstName} {user.lastName}
-                      </p>
-                      <p className="text-sm  text-gray-900 dark:text-gray-400">
-                        <b>Email:</b> {user.email}
-                      </p>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      <button
-                        onClick={() => navigate(`/profile?userId=${user.id}`)}
-                        className="flex items-center px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
-                      >
-                        Ver Perfil
-                      </button>
-                      <button
-                        onClick={() => deleteUsers(user.id)}
-                        className="flex items-center px-3 py-2 text-xs font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 cursor-pointer"
-                      >
-                        <img src={Trash} alt="Delete" className="w-5 h-5 mr-2" />
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
+          <div className="bg-white dark:bg-gray-800 shadow-xl rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nome</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Role</th>
+                    <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  {loading ? (
+                    <><TableRowSkeleton /><TableRowSkeleton /><TableRowSkeleton /></>
+                  ) : users.length > 0 ? (
+                    users.map((user) => (
+                      <tr key={user.id} className="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap"><div className="text-sm font-medium">{user.firstName} {user.lastName}</div></td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">{user.email}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.role === 'admin' ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300' : 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'}`}>
+                            {user.role}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                          <div className="flex items-center justify-center space-x-4">
+                            {/* 4. Botão agora abre o modal */}
+                            <button onClick={() => handleViewUser(user)} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300" title="Ver Detalhes">
+                              <EyeIcon className="h-5 w-5" />
+                            </button>
+                            <button onClick={() => handleDeleteUser(user.id)} className="text-red-600 hover:text-red-900 dark:text-red-500 dark:hover:text-red-400" title="Excluir Usuário">
+                              <TrashIcon className="h-5 w-5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr><td colSpan="4" className="text-center py-10 text-gray-500">Nenhum usuário encontrado.</td></tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+      
+      <UserModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        user={selectedUser}
+        onUserUpdate={handleUserUpdate}
+      />
     </>
   );
 }
