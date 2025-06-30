@@ -32,7 +32,7 @@ function Profile() {
         ]);
 
         const enrichedTickets = ticketsRes.data.map(ticket => {
-          const session = sessionsRes.data.find(s => s._id === ticket.sessionId);
+          const session = sessionsRes.data.find(s => s.id === ticket.sessionId);
           if (!session) return null;
 
           const movie = moviesRes.data.find(m => m.id === session.movieId);
