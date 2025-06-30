@@ -1,171 +1,84 @@
-import Trash from "../../../assets/trash.svg";
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router';
+import Cookies from 'js-cookie';
+import { UsersIcon, FilmIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import CineHugoLogo from "../../../assets/cinehugo.svg";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import Cookies from "js-cookie";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import api from "../../../services/api";
 
-// Detecta tema escuro do Tailwind
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(false);
-  useEffect(() => {
-    const root = window.document.documentElement;
-    setIsDark(root.classList.contains('dark'));
-    const observer = new MutationObserver(() => {
-      setIsDark(root.classList.contains('dark'));
-    });
-    observer.observe(root, { attributes: true, attributeFilter: ['class'] });
-    return () => observer.disconnect();
-  }, []);
-  return isDark;
-}
+function AdminHome() {
+    const navigate = useNavigate();
+    const [adminName, setAdminName] = useState('');
 
-function Home() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const isDark = useDarkMode();
+    useEffect(() => {
+        const userData = Cookies.get('user');
+        if (userData) {
+            const user = JSON.parse(userData);
+            setAdminName(user.firstName || 'Admin');
+        }
+    }, []);
 
-  async function getUsers() {
-    setLoading(true);
-    try {
-      const usersFromApi = await api.get("/users");
-      setUsers(usersFromApi.data);
-    } finally {
-      setLoading(false);
-    }
-  }
+    const handleLogout = () => {
+        Cookies.remove('token');
+        Cookies.remove('user');
+        navigate('/login');
+    };
 
-  async function deleteUsers(id) {
-    await api.delete(`/users/delete/${id}`);
-    getUsers();
-  }
-
-  function logout() {
-    Cookies.remove("token");
-    Cookies.remove("user");
-    navigate("/login");
-  }
-
-  useEffect(() => {
-    getUsers();
-  }, []);
-
-  return (
-    <>
-      <section>
-        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-16">
-          <div class="flex items-center justify-between w-full max-w-md mb-6">
-            <div class="flex items-center gap-4">
-              <img
-                class="w-8 h-8 mr-2"
-                src={CineHugoLogo}
-                alt="logo"
-              />
-              <span class="text-2xl font-semibold text-gray-900 dark:text-white">
-                CineHugo
-              </span>
+    const Card = ({ to, icon: Icon, title, description }) => (
+        <Link to={to} className="group block p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+            <div className="flex items-center justify-center h-16 w-16 bg-red-100 dark:bg-red-900/50 rounded-lg mb-6">
+                <Icon className="h-8 w-8 text-red-600 dark:text-red-400" />
             </div>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{title}</h3>
+            <p className="text-gray-600 dark:text-gray-400">{description}</p>
+        </Link>
+    );
 
-            {/* Botão de Logout */}
-            <button
-              onClick={logout}
-              className="px-3 py-2 text-sm font-medium text-white bg-gray-700 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-            >
-              Logout
-            </button>
-          </div>
+    return (
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+            {/* Header */}
+            <header className="bg-white dark:bg-gray-800 shadow-md">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-20">
+                        <div className="flex items-center space-x-2">
+                            <img className="w-8 h-8" src={CineHugoLogo} alt="logo" />
+                            <span className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">CineHugo - Admin</span>
+                        </div>
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 transition-colors"
+                        >
+                            <ArrowRightOnRectangleIcon className="h-6 w-6" />
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
 
-          {/* Listar Usuários */}
-          <div className="w-full bg-white rounded-lg shadow dark:border md:mt-8 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h2 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                Lista de Usuários
-              </h2>
-              {loading ? (
-                Array.from({ length: 3 }).map((_, idx) => (
-                  <div
-                    key={idx}
-                    className="w-full bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700 p-6 mb-4"
-                  >
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-900 dark:text-gray-400">
-                        <b>Nome:</b> <Skeleton 
-                          width={120}
-                          baseColor={isDark ? '#18181b' : '#bdbdbd'}
-                          highlightColor={isDark ? '#6366f1' : '#ffffff'}
-                          duration={1.2}
-                        />
-                      </p>
-                      <p className="text-sm text-gray-900 dark:text-gray-400">
-                        <b>Email:</b> <Skeleton 
-                          width={180}
-                          baseColor={isDark ? '#18181b' : '#bdbdbd'}
-                          highlightColor={isDark ? '#6366f1' : '#ffffff'}
-                          duration={1.2}
-                        />
-                      </p>
-                    </div>
-                    <div className="flex justify-end gap-2 mt-4">
-                      <Skeleton 
-                        width={80} 
-                        height={32} 
-                        baseColor={isDark ? '#18181b' : '#bdbdbd'}
-                        highlightColor={isDark ? '#6366f1' : '#ffffff'}
-                        duration={1.2}
-                        style={{ borderRadius: 8 }}
-                      />
-                      <Skeleton 
-                        width={80} 
-                        height={32} 
-                        baseColor={isDark ? '#18181b' : '#bdbdbd'}
-                        highlightColor={isDark ? '#6366f1' : '#ffffff'}
-                        duration={1.2}
-                        style={{ borderRadius: 8 }}
-                      />
-                    </div>
-                  </div>
-                ))
-              ) : (
-                users.map((user) => (
-                  <div
-                    key={user.id}
-                    className="w-full bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700 p-6 mb-4"
-                  >
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-900 dark:text-gray-400">
-                        <b>Nome:</b> {user.firstName} {user.lastName}
-                      </p>
-                      <p className="text-sm  text-gray-900 dark:text-gray-400">
-                        <b>Email:</b> {user.email}
-                      </p>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      <button
-                        onClick={() => navigate(`/profile?userId=${user.id}`)}
-                        className="flex items-center px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
-                      >
-                        Ver Perfil
-                      </button>
-                      <button
-                        onClick={() => deleteUsers(user.id)}
-                        className="flex items-center px-3 py-2 text-xs font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 cursor-pointer"
-                      >
-                        <img src={Trash} alt="Delete" className="w-5 h-5 mr-2" />
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
+            {/* Main Content */}
+            <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+                    Bem-vindo, {adminName}!
+                </h1>
+                <p className="text-lg text-gray-600 dark:text-gray-400 mb-12">
+                    Selecione uma das opções abaixo para começar a gerenciar o sistema.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <Card
+                        to="/admin/users"
+                        icon={UsersIcon}
+                        title="Gerenciar Usuários"
+                        description="Visualize, edite e remova usuários cadastrados no sistema."
+                    />
+                    <Card
+                        to="/admin/movies"
+                        icon={FilmIcon}
+                        title="Gerenciar Filmes"
+                        description="Adicione, edite, visualize e remova filmes, salas e sessões."
+                    />
+                </div>
+            </main>
         </div>
-      </section>
-    </>
-  );
+    );
 }
 
-export default Home;
+export default AdminHome;

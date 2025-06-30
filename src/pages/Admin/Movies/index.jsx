@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { FilmIcon, PencilSquareIcon, EyeIcon, PlusCircleIcon, CalendarIcon, ViewfinderCircleIcon } from '@heroicons/react/24/outline';
+import { FilmIcon, PencilSquareIcon, EyeIcon, PlusCircleIcon, CalendarIcon, ViewfinderCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import api from '../../../services/api';
 
@@ -32,6 +32,19 @@ function AdminMovies() {
 
     fetchMovies();
   }, []);
+
+  const handleDeleteMovie = async (movieId) => {
+    if (window.confirm("Tem certeza que deseja excluir este filme? Todas as sessões associadas também serão perdidas.")) {
+      try {
+        await api.delete(`/movies/delete/${movieId}`);
+        toast.success("Filme excluído com sucesso!");
+        setMovies(prevMovies => prevMovies.filter(movie => movie.id !== movieId));
+      } catch (error) {
+        console.error("Erro ao excluir filme:", error);
+        toast.error(error.response?.data?.message || "Falha ao excluir o filme.");
+      }
+    }
+  };
 
   const handleAddNewSession = (movieId) => {
     navigate('/admin/sessions/new', { state: { movieId: movieId } });
@@ -114,6 +127,9 @@ function AdminMovies() {
                           </button>
                           <button onClick={() => handleEdit(movie.id)} className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300" title="Editar">
                             <PencilSquareIcon className="h-5 w-5" />
+                          </button>
+                          <button onClick={() => handleDeleteMovie(movie.id)} className="text-red-600 hover:text-red-900 dark:text-red-500 dark:hover:text-red-400" title="Excluir Filme">
+                            <TrashIcon className="h-5 w-5" />
                           </button>
                         </div>
                       </td>
