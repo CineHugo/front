@@ -46,7 +46,7 @@ function Login() {
       
       if (decodedToken && decodedToken.id) {
         try {
-          const userResponse = await api.get(`/users/${decodedToken.id}`);
+          const userResponse = await api.get(`/users/user/${decodedToken.id}`);
           userData = userResponse.data;
         } catch (userError) {
           console.error('Erro ao buscar dados do usuário:', userError);
