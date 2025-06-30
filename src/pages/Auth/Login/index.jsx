@@ -74,7 +74,7 @@ function Login() {
       if (userData && userData.role === 'admin') {
         navigate("/admin");
       } else {
-        navigate("/profile");
+        navigate("/");
       }
     } catch (error) {
       const errorMessage = error.response?.data || "Erro ao fazer login";
