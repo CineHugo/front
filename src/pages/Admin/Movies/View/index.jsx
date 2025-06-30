@@ -66,6 +66,10 @@ function AdminMovieView() {
 
     fetchData();
   }, [movieId, navigate]);
+
+  const handleEditSession = (sessionId) => {
+    navigate(`/admin/sessions/edit/${sessionId}`);
+  };
   
   const handleDeleteSession = async (sessionId) => {
       if (window.confirm("Tem certeza que deseja excluir esta sessão?")) {
@@ -141,7 +145,7 @@ function AdminMovieView() {
                                     <td className="px-6 py-4 whitespace-nowrap">R$ {session.basePrice.toFixed(2)}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-center">
                                         <div className="flex items-center justify-center space-x-4">
-                                            <button className="text-indigo-400 hover:text-indigo-300" title="Editar Sessão"><PencilSquareIcon className="h-5 w-5"/></button>
+                                            <button onClick={() => handleEditSession(session.id)} className="text-indigo-400 hover:text-indigo-300" title="Editar Sessão"><PencilSquareIcon className="h-5 w-5"/></button>
                                             <button onClick={() => handleDeleteSession(session.id)} className="text-red-500 hover:text-red-400" title="Excluir Sessão"><TrashIcon className="h-5 w-5"/></button>
                                         </div>
                                     </td>
