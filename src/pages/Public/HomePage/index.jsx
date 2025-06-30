@@ -101,7 +101,7 @@ function HomePage() {
               ) : (
                 <>
                   <Link to="/login" className="flex items-center text-lg px-4 py-2 rounded-md hover:bg-red-700 dark:hover:bg-red-800 transition">Login</Link>
-                  <Link to="/register" className="text-lg bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-950">Register</Link>
+                  <Link to="/register" className="text-lg bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-950">Registrar</Link>
                 </>
               )}
             </nav>
