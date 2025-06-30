@@ -12,13 +12,16 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/vite": "^4.1.6",
+    "@zxing/library": "^0.21.3",
     "axios": "^1.9.0",
     "js-cookie": "^3.0.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",
     "react-loading-skeleton": "^3.5.0",
+    "react-qr-code": "^2.0.16",
     "react-router": "^7.6.0",
+    "react-zxing": "^2.1.0",
     "tailwindcss": "^4.1.6"
   },
   "devDependencies": {
