@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router";
 import api from "../../../services/api";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -102,7 +102,7 @@ function Checkout() {
     // O corpo da requisição está alinhado com o que o controller espera
     const payload = {
       sessionId,
-      tickets: buyers,
+      seats: buyers,
     };
 
     try {
