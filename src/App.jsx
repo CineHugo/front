@@ -21,6 +21,7 @@ import AdminUserList from "./pages/Admin/Users/List";
 import SeatMap from "./pages/Private/SeatMap";
 import TicketDetailPage from "./pages/Admin/Ticket/index.tsx"; 
 import Scanner from "./pages/Admin/Scanner";
+import Checkout from "./pages/Private/Checkout";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/movie/:movieId" element={<PublicMovieView />} />
         <Route path="/select-seat/:sessionId" element={<PrivateRoute><SeatMap /></PrivateRoute>} />
+        <Route path="/checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
         <Route path="/meus-ingressos/:id" element={<PrivateRoute><TicketDetailPage /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
         <Route path="/admin" element={<AdminRoute><Home /></AdminRoute>} />
