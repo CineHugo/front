@@ -31,6 +31,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/movie/:movieId" element={<PublicMovieView />} />
         <Route path="/select-seat/:sessionId" element={<PrivateRoute><SeatMap /></PrivateRoute>} />
+        <Route path="/meus-ingressos/:id" element={<PrivateRoute><TicketDetailPage /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
         <Route path="/admin" element={<AdminRoute><Home /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminUserList /></AdminRoute>} />
