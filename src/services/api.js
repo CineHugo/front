@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 
 const api = axios.create({
     baseURL: 'https://absolute-cinema-back.q7hbhh.easypanel.host/'
+    // baseURL: 'http://localhost:8000/',
     // Removido withCredentials para evitar erro de CORS
 })
 

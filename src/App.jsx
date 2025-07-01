@@ -19,6 +19,8 @@ import AdminRoomNew from './pages/Admin/Rooms/New';
 import AdminSessionEdit from './pages/Admin/Sessions/Edit';
 import AdminUserList from "./pages/Admin/Users/List";
 import SeatMap from "./pages/Private/SeatMap";
+import TicketDetailPage from "./pages/Admin/Ticket/index.tsx"; 
+import Scanner from "./pages/Admin/Scanner";
 
 function App() {
   return (
@@ -29,6 +31,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/movie/:movieId" element={<PublicMovieView />} />
         <Route path="/select-seat/:sessionId" element={<PrivateRoute><SeatMap /></PrivateRoute>} />
+        <Route path="/meus-ingressos/:id" element={<PrivateRoute><TicketDetailPage /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
         <Route path="/admin" element={<AdminRoute><Home /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminUserList /></AdminRoute>} />
@@ -40,6 +43,8 @@ function App() {
         <Route path="/admin/sessions/edit/:sessionId" element={<AdminRoute><AdminSessionEdit /></AdminRoute>} />
         <Route path="/admin/rooms" element={<AdminRoute><AdminRoomList /></AdminRoute>} />
         <Route path="/admin/rooms/new" element={<AdminRoute><AdminRoomNew /></AdminRoute>} />
+        <Route path="/admin/tickets/ticket/:id" element={<PrivateRoute><TicketDetailPage /></PrivateRoute>} />
+        <Route path="/admin/scanner" element={<PrivateRoute><Scanner /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );
