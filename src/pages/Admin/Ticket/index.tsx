@@ -6,40 +6,84 @@ import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import QRCode from "react-qr-code";
 import api from "../../../services/api"; // Verifique se o caminho está correto
 
-// A interface PopulatedTicket está ótima como está.
-interface PopulatedTicket {
+interface Ticket {
   _id: string;
-  qrUuid: string;
+  sessionId: string;
+  userId: string;
+  seatLabel: string;
   occupantName: string;
+  occupantCpf: string;
+  occupantEmail: string;
+  qrUuid: string;
   status: string;
-  user: {
-    firstName: string;
-    lastName: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
+interface Session {
+  _id: string;
+  movieId: string;
+  roomId: string;
+  startsAt: string;
+  endsAt: string;
+  durationMin: number;
+  basePrice: number;
+  roomDetails: {
+    _id: string;
+    name: string;
+    seatMap: Array<{
+      label: string;
+      row: string;
+      col: number;
+    }>;
+    capacity: number;
   };
-  session: {
-    startsAt: string;
-    movie: {
-      title: string;
-    };
-    room: {
-      name: string;
-    };
+  ticketsInfo: {
+    soldCount: number;
+    availableCount: number;
+    soldSeats: string[];
   };
+}
+
+interface Movie {
+  id: string;
+  title: string;
+  synopsis: string;
+  releaseDate: string;
+  mainImageUrl: string;
+  bannerImageUrl: string;
 }
 
 const TicketDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [ticket, setTicket] = useState<PopulatedTicket | null>(null);
+  const [ticket, setTicket] = useState<Ticket | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchTicket = async () => {
+    const fetchTicketData = async () => {
       if (!id) return;
       try {
         setLoading(true);
-        const response = await api.get(`/tickets/ticket/${id}`);
-        setTicket(response.data);
+        
+        // 1. Buscar dados do ticket
+        const ticketResponse = await api.get(`/tickets/ticket/${id}`);
+        const ticketData = ticketResponse.data;
+        setTicket(ticketData);
+
+        // 2. Buscar dados da sessão usando sessionId
+        const sessionResponse = await api.get(`/sessions/session/${ticketData.sessionId}`);
+        const sessionData = sessionResponse.data;
+        setSession(sessionData);
+
+        // 3. Buscar dados do filme usando movieId da sessão
+        const movieResponse = await api.get(`/movies/movie/${sessionData.movieId}`);
+        const movieData = movieResponse.data;
+        setMovie(movieData);
+
       } catch (err) {
         setError("Erro ao carregar o ingresso.");
         console.error(err);
@@ -48,14 +92,14 @@ const TicketDetailPage: React.FC = () => {
       }
     };
 
-    fetchTicket();
+    fetchTicketData();
   }, [id]);
 
   if (loading)
     return <div className="text-white text-center p-10">A carregar...</div>;
   if (error)
     return <div className="text-red-500 text-center p-10">{error}</div>;
-  if (!ticket)
+  if (!ticket || !session || !movie)
     return (
       <div className="text-white text-center p-10">
         Ingresso não encontrado.
@@ -89,7 +133,7 @@ const TicketDetailPage: React.FC = () => {
           <div className="p-6 space-y-4">
             <div className="text-center">
               <h2 className="text-xl font-bold text-red-500 uppercase tracking-wider">
-                {ticket.session?.movie?.title || "Filme não disponível"}
+                {movie.title}
               </h2>
             </div>
             <div>
@@ -102,7 +146,7 @@ const TicketDetailPage: React.FC = () => {
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Sala</p>
                 <p className="font-semibold text-lg">
-                  {ticket.session?.room?.name || "N/A"}
+                  {session.roomDetails.name}
                 </p>
               </div>
               <div>
@@ -110,14 +154,16 @@ const TicketDetailPage: React.FC = () => {
                   Sessão
                 </p>
                 <p className="font-semibold text-lg">
-                  {ticket.session?.startsAt
-                    ? new Date(ticket.session.startsAt).toLocaleTimeString(
-                        "pt-BR",
-                        { hour: "2-digit", minute: "2-digit" }
-                      )
-                    : "N/A"}
+                  {new Date(session.startsAt).toLocaleTimeString(
+                    "pt-BR",
+                    { hour: "2-digit", minute: "2-digit" }
+                  )}
                 </p>
               </div>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Assento</p>
+              <p className="font-semibold text-lg">{ticket.seatLabel}</p>
             </div>
           </div>
 
