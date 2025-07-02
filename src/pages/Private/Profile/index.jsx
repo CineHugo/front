@@ -148,7 +148,7 @@ function Profile() {
                   // Envolvemos todo o card com o componente Link
                   // Ele irá para a rota que definimos para o utilizador comum
                   <Link to={`/meus-ingressos/${ticket._id}`} key={ticket._id}>
-                    <div className="bg-gray-800 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center gap-4 hover:bg-gray-700/50 transition cursor-pointer">
+                    <div className="bg-gray-800 mb-1 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center gap-4 hover:bg-gray-700/50 transition cursor-pointer">
                       <div className="flex-1">
                         <p className="font-bold text-lg flex items-center gap-2">
                           <FilmIcon className="h-5 w-5 text-red-400" />{" "}
